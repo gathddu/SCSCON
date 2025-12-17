@@ -1,0 +1,41 @@
+{
+  "name": "scscon",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
+    "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "start": "NODE_ENV=production node dist/index.js",
+    "check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "db:push": "drizzle-kit generate && drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "@trpc/client": "^11.6.0",
+    "@trpc/react-query": "^11.6.0",
+    "@trpc/server": "^11.6.0",
+    "express": "^4.21.2",
+    "drizzle-orm": "^0.44.5",
+    "mysql2": "^3.15.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "wouter": "^3.3.5",
+    "zod": "^4.1.12",
+    "superjson": "^1.13.3",
+    "lucide-react": "^0.453.0",
+    "recharts": "^2.15.2",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "5.9.3",
+    "vite": "^7.1.7",
+    "tsx": "^4.19.1",
+    "drizzle-kit": "^0.31.4",
+    "vitest": "^2.1.4"
+  }
+}
+
