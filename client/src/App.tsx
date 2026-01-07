@@ -1,15 +1,7 @@
 function App() {
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: '#0A1F3D',
-      color: '#FFFEF5',
-      fontFamily: 'Inter, sans-serif'
-    }}>
-      <div style={{ textAlign: 'center' }}>
+    <div className="min-h-screen flex items-center justify-center bg-[#0A1F3D] text-[#FFFEF5]" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <div className="text-center">
         <h1 style={{ fontSize: '4rem', marginBottom: '1rem', color: '#A3A521' }}>
           SCS Conectado
         </h1>
