@@ -1,0 +1,40 @@
+function App() {
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: '#0A1F3D',
+      color: '#FFFEF5',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1 style={{ fontSize: '4rem', marginBottom: '1rem', color: '#A3A521' }}>
+          SCS Conectado
+        </h1>
+        <p style={{ fontSize: '1.5rem', color: '#FFFEF5' }}>
+          Plataforma de Segurança Comunitária
+        </p>
+        <p style={{ marginTop: '2rem', color: '#A8C4C9' }}>
+          In production
+        </p>
+        <button style={{
+          marginTop: '2rem',
+          padding: '1rem 2rem',
+          background: '#E8822A',
+          color: '#FFFEF5',
+          border: 'none',
+          borderRadius: '8px',
+          fontSize: '1rem',
+          cursor: 'pointer',
+          fontWeight: '600'
+        }}>
+          Start
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default App;
