@@ -1,4 +1,4 @@
-import { Link } from 'wouter';
+import Header from '../components/Header';
 import { useState } from 'react';
 
 function Alerts() {
@@ -23,22 +23,9 @@ function Alerts() {
 
   return (
     <div className="min-h-screen bg-[#0A1F3D] text-[#FFFEF5]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      <header style={{ 
-        padding: '1rem 2rem', 
-        borderBottom: '1px solid #A8C4C9',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <h1 style={{ fontSize: '1.5rem', color: '#A3A521' }}>SCS Conectado</h1>
-        <nav style={{ display: 'flex', gap: '2rem' }}>
-          <Link href="/" style={{ color: '#A8C4C9', textDecoration: 'none' }}>Home</Link>
-          <Link href="/dashboard" style={{ color: '#A8C4C9', textDecoration: 'none' }}>Dashboard</Link>
-          <Link href="/map" style={{ color: '#A8C4C9', textDecoration: 'none' }}>Mapa</Link>
-          <Link href="/alerts" style={{ color: '#E8822A', textDecoration: 'none' }}>Alertas</Link>
-        </nav>
-      </header>
-      
+      <Header />
+
+      {/* Main Content */}
       <main style={{ padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem' }}>Alertas</h2>
@@ -56,7 +43,7 @@ function Alerts() {
           </button>
         </div>
         
-
+        {/* Alerts List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {alerts.map(alert => (
             <div key={alert.id} style={{ 
