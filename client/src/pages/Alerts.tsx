@@ -1,13 +1,8 @@
 import Header from '../components/Header';
-import { useState } from 'react';
+import { trpc } from '../lib/trpc';
 
 function Alerts() {
-  const [alerts] = useState([
-    { id: 1, type: 'theft', description: 'Furto na Quadra 3', status: 'pending', time: '10 min atrás' },
-    { id: 2, type: 'suspicious_individual', description: 'Pessoa suspeita na entrada', status: 'in_progress', time: '25 min atrás' },
-    { id: 3, type: 'poor_lighting', description: 'Iluminação quebrada Bloco B', status: 'resolved', time: '1h atrás' },
-    { id: 4, type: 'medical_emergency', description: 'Emergência médica no estacionamento', status: 'resolved', time: '2h atrás' },
-  ]);
+  const { data: alerts, isLoading } = trpc.alerts.list.useQuery();
 
   const statusColors: Record<string, string> = {
     pending: '#E8822A',
@@ -19,6 +14,14 @@ function Alerts() {
     pending: 'Pendente',
     in_progress: 'Em Andamento',
     resolved: 'Resolvido',
+  };
+
+  const formatTime = (date: Date) => {
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - new Date(date).getTime()) / 1000 / 60);
+    if (diff < 60) return `${diff} min atrás`;
+    if (diff < 1440) return `${Math.floor(diff / 60)}h atrás`;
+    return `${Math.floor(diff / 1440)}d atrás`;
   };
 
   return (
@@ -43,34 +46,38 @@ function Alerts() {
           </button>
         </div>
         
-        {/* Alerts List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {alerts.map(alert => (
-            <div key={alert.id} style={{ 
-              background: '#D9D0C1', 
-              padding: '1.5rem', 
-              borderRadius: '8px',
-              color: '#0A1F3D',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <div>
-                <p style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{alert.description}</p>
-                <p style={{ opacity: 0.7, marginTop: '0.5rem' }}>{alert.time}</p>
-              </div>
-              <span style={{ 
-                background: statusColors[alert.status], 
-                padding: '0.5rem 1rem', 
-                borderRadius: '20px',
-                color: '#FFFEF5',
-                fontSize: '0.9rem'
+        {isLoading ? (
+          <p>Carregando...</p>
+        ) : (
+          /* Alerts List */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {alerts?.map(alert => (
+              <div key={alert.id} style={{ 
+                background: '#D9D0C1', 
+                padding: '1.5rem', 
+                borderRadius: '8px',
+                color: '#0A1F3D',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}>
-                {statusLabels[alert.status]}
-              </span>
-            </div>
-          ))}
-        </div>
+                <div>
+                  <p style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{alert.description}</p>
+                  <p style={{ opacity: 0.7, marginTop: '0.5rem' }}>{formatTime(alert.createdAt)}</p>
+                </div>
+                <span style={{ 
+                  background: statusColors[alert.status], 
+                  padding: '0.5rem 1rem', 
+                  borderRadius: '20px',
+                  color: '#FFFEF5',
+                  fontSize: '0.9rem'
+                }}>
+                  {statusLabels[alert.status]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
