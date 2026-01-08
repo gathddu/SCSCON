@@ -23,7 +23,6 @@ function Alerts() {
 
   return (
     <div className="min-h-screen bg-[#0A1F3D] text-[#FFFEF5]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      {/* Header */}
       <header style={{ 
         padding: '1rem 2rem', 
         borderBottom: '1px solid #A8C4C9',
@@ -39,8 +38,7 @@ function Alerts() {
           <Link href="/alerts" style={{ color: '#E8822A', textDecoration: 'none' }}>Alertas</Link>
         </nav>
       </header>
-
-      {/* Main Content */}
+      
       <main style={{ padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem' }}>Alertas</h2>
@@ -58,7 +56,7 @@ function Alerts() {
           </button>
         </div>
         
-        {/* Alerts List */}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {alerts.map(alert => (
             <div key={alert.id} style={{ 
