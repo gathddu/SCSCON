@@ -1,6 +1,7 @@
 import Header from '../components/Header';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
+import { trpc } from '../lib/trpc';
 import 'leaflet/dist/leaflet.css';
 
 const defaultIcon = new Icon({
@@ -11,13 +12,6 @@ const defaultIcon = new Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 } );
-
-// mock
-const alerts = [
-  { id: 1, type: 'theft', description: 'Furto na Quadra 3', status: 'pending', lat: -15.7942, lng: -47.8922 },
-  { id: 2, type: 'suspicious_individual', description: 'Pessoa suspeita na entrada', status: 'in_progress', lat: -15.7935, lng: -47.8880 },
-  { id: 3, type: 'poor_lighting', description: 'Iluminação quebrada Bloco B', status: 'resolved', lat: -15.7950, lng: -47.8900 },
-];
 
 const statusColors: Record<string, string> = {
   pending: '#E8822A',
@@ -32,6 +26,8 @@ const statusLabels: Record<string, string> = {
 };
 
 function Map() {
+  const { data: alerts, isLoading } = trpc.alerts.list.useQuery();
+  
   // SCS coordinates
   const scsCenter: [number, number] = [-15.7942, -47.8922];
 
@@ -58,36 +54,44 @@ function Map() {
           </div>
         </div>
         
-        <div style={{ borderRadius: '12px', overflow: 'hidden', height: 'calc(100% - 50px)' }}>
-          <MapContainer 
-            center={scsCenter} 
-            zoom={16} 
-            style={{ height: '100%', width: '100%' }}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {alerts.map(alert => (
-              <Marker key={alert.id} position={[alert.lat, alert.lng]} icon={defaultIcon}>
-                <Popup>
-                  <div style={{ minWidth: '200px' }}>
-                    <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{alert.description}</p>
-                    <span style={{ 
-                      background: statusColors[alert.status], 
-                      padding: '0.25rem 0.75rem', 
-                      borderRadius: '12px',
-                      color: '#fff',
-                      fontSize: '0.8rem'
-                    }}>
-                      {statusLabels[alert.status]}
-                    </span>
-                  </div>
-                </Popup>
-              </Marker>
-             ))}
-          </MapContainer>
-        </div>
+        {isLoading ? (
+          <p>Carregando mapa...</p>
+        ) : (
+          <div style={{ borderRadius: '12px', overflow: 'hidden', height: 'calc(100% - 50px)' }}>
+            <MapContainer 
+              center={scsCenter} 
+              zoom={16} 
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {alerts?.map(alert => (
+                <Marker 
+                  key={alert.id} 
+                  position={[Number(alert.latitude ), Number(alert.longitude)]} 
+                  icon={defaultIcon}
+                >
+                  <Popup>
+                    <div style={{ minWidth: '200px' }}>
+                      <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{alert.description}</p>
+                      <span style={{ 
+                        background: statusColors[alert.status], 
+                        padding: '0.25rem 0.75rem', 
+                        borderRadius: '12px',
+                        color: '#fff',
+                        fontSize: '0.8rem'
+                      }}>
+                        {statusLabels[alert.status]}
+                      </span>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
+        )}
       </main>
     </div>
   );

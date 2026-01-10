@@ -8,11 +8,10 @@ export const appRouter = router({
 
   alerts: router({
     list: publicProcedure.query(() => {
-      // mock
       return [
-        { id: 1, type: 'theft', description: 'Furto na Quadra 3', status: 'pending', createdAt: new Date() },
-        { id: 2, type: 'suspicious_individual', description: 'Pessoa suspeita na entrada', status: 'in_progress', createdAt: new Date() },
-        { id: 3, type: 'poor_lighting', description: 'Iluminação quebrada Bloco B', status: 'resolved', createdAt: new Date() },
+        { id: 1, type: 'theft', description: 'Furto na Quadra 3', status: 'pending', latitude: -15.7942, longitude: -47.8922, createdAt: new Date() },
+        { id: 2, type: 'suspicious_individual', description: 'Pessoa suspeita na entrada', status: 'in_progress', latitude: -15.7935, longitude: -47.8880, createdAt: new Date() },
+        { id: 3, type: 'poor_lighting', description: 'Iluminação quebrada Bloco B', status: 'resolved', latitude: -15.7950, longitude: -47.8900, createdAt: new Date() },
       ];
     }),
 
@@ -24,7 +23,6 @@ export const appRouter = router({
         longitude: z.number(),
       }))
       .mutation(({ input }) => {
-        // mock
         return { id: Date.now(), ...input, status: 'pending', createdAt: new Date() };
       }),
   }),
