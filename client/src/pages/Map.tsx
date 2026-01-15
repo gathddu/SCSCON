@@ -11,23 +11,34 @@ const defaultIcon = new Icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-} );
+});
 
 const statusColors: Record<string, string> = {
   pending: '#E8822A',
   in_progress: '#A3A521',
   resolved: '#A8C4C9',
+  false_alarm: '#666666',
 };
 
 const statusLabels: Record<string, string> = {
   pending: 'Pendente',
   in_progress: 'Em Andamento',
   resolved: 'Resolvido',
+  false_alarm: 'Alarme Falso',
+};
+
+const categoryLabels: Record<string, string> = {
+  theft: 'Furto',
+  robbery: 'Roubo',
+  medical_emergency: 'Emergência Médica',
+  drug_use: 'Uso de Drogas',
+  suspicious_individual: 'Indivíduo Suspeito',
+  poor_lighting: 'Iluminação Ruim',
 };
 
 function Map() {
   const { data: alerts, isLoading } = trpc.alerts.list.useQuery();
-  
+
   // SCS coordinates
   const scsCenter: [number, number] = [-15.7942, -47.8922];
 
@@ -53,14 +64,14 @@ function Map() {
             </span>
           </div>
         </div>
-        
+
         {isLoading ? (
           <p>Carregando mapa...</p>
         ) : (
           <div style={{ borderRadius: '12px', overflow: 'hidden', height: 'calc(100% - 50px)' }}>
-            <MapContainer 
-              center={scsCenter} 
-              zoom={16} 
+            <MapContainer
+              center={scsCenter}
+              zoom={16}
               style={{ height: '100%', width: '100%' }}
             >
               <TileLayer
@@ -68,17 +79,28 @@ function Map() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {alerts?.map(alert => (
-                <Marker 
-                  key={alert.id} 
-                  position={[Number(alert.latitude ), Number(alert.longitude)]} 
+                <Marker
+                  key={alert.id}
+                  position={[Number(alert.latitude), Number(alert.longitude)]}
                   icon={defaultIcon}
                 >
                   <Popup>
-                    <div style={{ minWidth: '200px' }}>
-                      <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{alert.description}</p>
-                      <span style={{ 
-                        background: statusColors[alert.status], 
-                        padding: '0.25rem 0.75rem', 
+                    <div style={{
+                      minWidth: '180px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '0.4rem'
+                    }}>
+                      <p style={{ fontWeight: 'bold', color: '#0A1F3D', fontSize: '1rem', margin: 0 }}>
+                        {categoryLabels[alert.category] || alert.category}
+                      </p>
+                      <p style={{ color: '#555', fontSize: '0.85rem', margin: 0 }}>
+                        {alert.description}
+                      </p>
+                      <span style={{
+                        background: statusColors[alert.status],
+                        padding: '0.3rem 0.75rem',
                         borderRadius: '12px',
                         color: '#fff',
                         fontSize: '0.8rem'
@@ -87,6 +109,8 @@ function Map() {
                       </span>
                     </div>
                   </Popup>
+
+
                 </Marker>
               ))}
             </MapContainer>

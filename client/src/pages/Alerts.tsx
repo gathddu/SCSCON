@@ -32,7 +32,7 @@ function Alerts() {
     resolved: 'Resolvido',
   };
 
-  const typeLabels: Record<string, string> = {
+  const categoryLabels: Record<string, string> = {
     theft: 'Furto',
     robbery: 'Roubo',
     medical_emergency: 'Emergência Médica',
@@ -81,10 +81,10 @@ function Alerts() {
             color: '#0A1F3D'
           }}>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Novo Alerta</h3>
-            
+
             <label style={{ display: 'block', marginBottom: '1rem' }}>
               <span style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Tipo</span>
-              <select 
+              <select
                 value={newAlert.type}
                 onChange={(e) => setNewAlert({ ...newAlert, type: e.target.value })}
                 style={{
@@ -95,7 +95,7 @@ function Alerts() {
                   fontSize: '1rem'
                 }}
               >
-                {Object.entries(typeLabels).map(([value, label]) => (
+                {Object.entries(categoryLabels).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
               </select>
@@ -157,7 +157,7 @@ function Alerts() {
       <main style={{ padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '2rem' }}>Alertas</h2>
-          <button 
+          <button
             onClick={() => setShowModal(true)}
             style={{
               padding: '0.75rem 1.5rem',
@@ -173,15 +173,15 @@ function Alerts() {
             + Novo Alerta
           </button>
         </div>
-        
+
         {isLoading ? (
           <p>Carregando...</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {alerts?.map(alert => (
-              <div key={alert.id} style={{ 
-                background: '#D9D0C1', 
-                padding: '1.5rem', 
+              <div key={alert.id} style={{
+                background: '#D9D0C1',
+                padding: '1.5rem',
                 borderRadius: '8px',
                 color: '#0A1F3D',
                 display: 'flex',
@@ -189,12 +189,15 @@ function Alerts() {
                 alignItems: 'center'
               }}>
                 <div>
+                  <p style={{ fontSize: '0.85rem', color: '#E8822A', fontWeight: '600', marginBottom: '0.25rem' }}>
+                    {categoryLabels[alert.category] || alert.category}
+                  </p>
                   <p style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{alert.description}</p>
                   <p style={{ opacity: 0.7, marginTop: '0.5rem' }}>{formatTime(alert.createdAt)}</p>
                 </div>
-                <span style={{ 
-                  background: statusColors[alert.status], 
-                  padding: '0.5rem 1rem', 
+                <span style={{
+                  background: statusColors[alert.status],
+                  padding: '0.5rem 1rem',
                   borderRadius: '20px',
                   color: '#FFFEF5',
                   fontSize: '0.9rem'
