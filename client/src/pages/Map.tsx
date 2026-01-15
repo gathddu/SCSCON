@@ -4,14 +4,23 @@ import { Icon } from 'leaflet';
 import { trpc } from '../lib/trpc';
 import 'leaflet/dist/leaflet.css';
 
-const defaultIcon = new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+const createIcon = (color: string) => new Icon({
+  iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/img/marker-icon-2x-${color}.png`,
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-});
+  shadowSize: [41, 41]
+} );
+
+const statusIcons: Record<string, Icon> = {
+  pending: createIcon('orange'),
+  in_progress: createIcon('yellow'),
+  resolved: createIcon('green'),
+  false_alarm: createIcon('grey'),
+};
+
+const defaultIcon = createIcon('blue');
 
 const statusColors: Record<string, string> = {
   pending: '#E8822A',
@@ -81,8 +90,8 @@ function Map() {
               {alerts?.map(alert => (
                 <Marker
                   key={alert.id}
-                  position={[Number(alert.latitude), Number(alert.longitude)]}
-                  icon={defaultIcon}
+                  position={[Number(alert.latitude ), Number(alert.longitude)]}
+                  icon={statusIcons[alert.status] || defaultIcon}
                 >
                   <Popup>
                     <div style={{
@@ -109,8 +118,6 @@ function Map() {
                       </span>
                     </div>
                   </Popup>
-
-
                 </Marker>
               ))}
             </MapContainer>
