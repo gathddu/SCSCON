@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { appRouter } from '../routers';
-
+import { testConnection } from '../db';
 
 const app = express();
 const PORT = 3000;
@@ -28,6 +28,8 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date()
   });
 });
+
+testConnection();
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}` );

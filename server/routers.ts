@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import { router, publicProcedure } from './_core/trpc';
+import { db } from './db';
+import { alerts } from '../drizzle/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export const appRouter = router({
   health: publicProcedure.query(() => {
@@ -7,32 +10,54 @@ export const appRouter = router({
   }),
 
   alerts: router({
-    list: publicProcedure.query(() => {
-      return [
-        { id: 1, type: 'theft', description: 'Furto na Quadra 3', status: 'pending', latitude: -15.7942, longitude: -47.8922, createdAt: new Date() },
-        { id: 2, type: 'suspicious_individual', description: 'Pessoa suspeita na entrada', status: 'in_progress', latitude: -15.7935, longitude: -47.8880, createdAt: new Date() },
-        { id: 3, type: 'poor_lighting', description: 'Iluminação quebrada Bloco B', status: 'resolved', latitude: -15.7950, longitude: -47.8900, createdAt: new Date() },
-      ];
+    list: publicProcedure.query(async () => {
+      const allAlerts = await db.select().from(alerts).orderBy(desc(alerts.createdAt));
+      return allAlerts;
     }),
 
     create: publicProcedure
       .input(z.object({
-        type: z.string(),
+        type: z.enum(['theft', 'robbery', 'medical_emergency', 'drug_use', 'suspicious_individual', 'poor_lighting']),
         description: z.string(),
         latitude: z.number(),
         longitude: z.number(),
       }))
-      .mutation(({ input }) => {
-        return { id: Date.now(), ...input, status: 'pending', createdAt: new Date() };
+      .mutation(async ({ input }) => {
+        const result = await db.insert(alerts).values({
+          userId: 1,
+          category: input.type,
+          description: input.description,
+          latitude: input.latitude.toString(),
+          longitude: input.longitude.toString(),
+          status: 'pending',
+        });
+        
+        return { 
+          id: Number(result[0].insertId), 
+          ...input, 
+          status: 'pending', 
+          createdAt: new Date() 
+        };
       }),
   }),
 
-  stats: publicProcedure.query(() => {
+  stats: publicProcedure.query(async () => {
+    const allAlerts = await db.select().from(alerts);
+    const activeAlerts = allAlerts.filter(a => a.status === 'pending' || a.status === 'in_progress');
+    const resolvedToday = allAlerts.filter(a => {
+      if (a.status !== 'resolved') return false;
+      const today = new Date();
+      const alertDate = new Date(a.updatedAt);
+      return alertDate.toDateString() === today.toDateString();
+    });
+
     return {
-      activeAlerts: 12,
-      resolvedToday: 48,
-      activeUsers: 156,
-      resolutionRate: 89,
+      activeAlerts: activeAlerts.length,
+      resolvedToday: resolvedToday.length,
+      activeUsers: 1,
+      resolutionRate: allAlerts.length > 0 
+        ? Math.round((allAlerts.filter(a => a.status === 'resolved').length / allAlerts.length) * 100)
+        : 0,
     };
   }),
 });

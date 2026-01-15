@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1768435575228,
+      "tag": "0000_abnormal_sprite",
+      "breakpoints": true
+    }
+  ]
+}
