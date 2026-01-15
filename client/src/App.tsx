@@ -1,11 +1,14 @@
-import { Route, Switch } from 'wouter';
+import { Route, Switch, useLocation } from 'wouter';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Alerts from './pages/Alerts';
 import Map from './pages/Map';
+import PanicButton from './components/PanicButton';
 
 function App() {
+  const [location] = useLocation();
   return (
+    <>
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/dashboard" component = {Dashboard} />
@@ -17,6 +20,8 @@ function App() {
         </div>
       </Route>
     </Switch>
+    {location !== '/' && <PanicButton />}
+    </>
   );
 }
 
